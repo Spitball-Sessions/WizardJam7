@@ -22,10 +22,8 @@ def getting_mood_ideas():
         if v in (10,25,40):
             ideas.append(k)
 
-    tags = []
-    while len(tags) < 3:
-        tags.append(random.choice(ideas))
-        continue
+    tags = random.sample(ideas,3)
+
 
     print("Today, for double points, you should try to accomplish something from one of these tags: {}".format(", ".join(tags)))
     try:
