@@ -9,7 +9,7 @@ def adding_user_created_mood_ideas(entry_t):
     else:
         return
 
-def getting_mood_ideas():
+def getting_mood_ideas(new_sim):
     sql = sqlite3.connect("Characters.db")
     cursor = sql.cursor()
     ideas = []
@@ -26,8 +26,8 @@ def getting_mood_ideas():
         tags = random.sample(ideas,3)
     except ValueError:
         tags = []
-
-    print("\nToday, for double points, you should try to accomplish something from one of these tags:\n"
+    if new_sim != "yes" or new_sim != y:
+        print("\nToday, for double points, you should try to accomplish something from one of these tags:\n"
           "                               {}".format(", ".join(tags).title()))
     try:
         moods_c = random.choice(moods)

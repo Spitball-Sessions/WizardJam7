@@ -9,7 +9,7 @@ class Diary:
         while True:
 
             if times_appended > 0:
-                print("What else would you like to record?")
+                print("What else would you like to record? (Or \"nothing\" to end.")
             else:
                 print("All right, {}".format(player.first.capitalize()))
                 print("What would you like to record today??")

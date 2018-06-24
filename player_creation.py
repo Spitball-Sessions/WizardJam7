@@ -9,7 +9,7 @@ Player_Info = collections.namedtuple("Player_info",
                                      "first_name, last_name, age, gender, career, clothing, ambition")
 
 
-career_options = ("Creative", "Scholarly", "Legal", "Trade", "Technological", "Caring", "Governmental", "Student")
+career_options = ("Creative", "Scholarly", "Legal", "Trade", "Technological", "Caring", "Governmental", "Administrative", "Student")
 
 ambition_options = ("Wealth", "Fame", "Family", "Popularity", "Success", "Creation", "Contentment")
 
@@ -25,6 +25,14 @@ def help_reader():
 
 
 def valid_input(text, outfit, career_choice, player_ambition):
+    '''
+    Makes sure all the inputs during character creation are both alpha characters & within the valid lists, to prevent crashing later.
+    :param text: This is the entry the player types
+    :param outfit: True/False - To make sure that is checked for the valid list.
+    :param career_choice: True/False  - To make sure that is checked for the valid list.
+    :param player_ambition: True/False - To make sure that is checked for the valid list.
+    :return: if the text is valid, then it's returned.
+    '''
     while True:
         if text.isalpha():
             while outfit:
@@ -45,7 +53,9 @@ def valid_input(text, outfit, career_choice, player_ambition):
                 else:
                     text = input("That's not a valid choice. Please enter that again. ").title().strip()
             break
-
+        else:
+            text = input("I'm sorry, that's supposed to be a word. Try again. ")
+            continue
     return text
 
 
@@ -55,10 +65,15 @@ def create_Sim_Info_tuple(first, last, age, gender, career):
 
 
 def get_player_ambitions(name):
+    """
+    Gets player ambitions and career.  The functions these were going to hook into were never actually completed.
+    However, having them doesn't cause any issues.
+    :param name: Player name
+    :return: career & ambition for the Player class.
+    """
     ambitions_help, careers_help = help_reader()
-    print("All right, nice to meet you {}".format(name))
+    print("\n\nAll right, nice to meet you {}".format(name))
     time.sleep(1.25)
-    Zzz = os.system('cls' if os.name == 'nt' else 'clear')
     print("Now we need to establish your Sims' goals and ambitions.")
     print("\nWhich of these career tracks does your Sim want to pursue? Or type \"info\" and track for details.")
     print(", ".join(career_options))
@@ -78,7 +93,7 @@ def get_player_ambitions(name):
     print("\nExcellent! Now, let's discuss your ambitions!")
     time.sleep(.8)
     print("\n" + ", ".join(ambition_options))
-    print("Which of these would your Sim like to pursue?  Or type \"\info\" and ambition for details.")
+    print("Which of these would your Sim like to pursue?  Or type \"info\" and ambition for details.")
     while True:
         player_ambition = input().title().strip()
         if player_ambition[0:4] == "Info":
@@ -96,6 +111,13 @@ def get_player_ambitions(name):
 
 
 def get_player_info():
+    """
+    Gets basic player info - name, age, gender, etc.
+    Line 155 passes to get_player_ambitions() and then returns that info, to build the full character.
+    the "Sims Info" tuple was going to be for all the generic Sims, and the other was going to be player specific info...
+    this never panned out right.
+    :return: a tuple containing (First Name, Last Name, Age, Gender, Career, Clothing and Ambition)
+    """
     print("Hello.")
     while True:
         name = input("What is your Sim's first and last name?\n").title()
