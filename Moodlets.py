@@ -22,10 +22,13 @@ def getting_mood_ideas():
         if v in (10,25,40):
             ideas.append(k)
 
-    tags = random.sample(ideas,3)
+    try:
+        tags = random.sample(ideas,3)
+    except ValueError:
+        tags = []
 
-
-    print("Today, for double points, you should try to accomplish something from one of these tags: {}".format(", ".join(tags)))
+    print("\nToday, for double points, you should try to accomplish something from one of these tags:\n"
+          "                               {}".format(", ".join(tags).title()))
     try:
         moods_c = random.choice(moods)
         print("Or, do \"{}\" again, for {} points".format(moods_c[1],str(moods_c[2]*3)))

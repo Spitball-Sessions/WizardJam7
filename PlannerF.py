@@ -56,11 +56,8 @@ class Planner():
         planner_entry.execute("INSERT INTO PLANNER(PLAYER_ID,DUE_DATE,DUE_TIME,TASK, TAGS, POINTS, STATUS)VALUES(?,?,?,?,?,?,?)",
                               (player.first+player.last, entry_tuple.due_date, entry_tuple.due_time, entry_tuple.entry, entry_tuple.tag, entry_tuple.score, True))
         Moodlets.adding_user_created_mood_ideas(tuple,player)
-        print("Updated list...")
         planner_entry.commit()
-        print("Saved list...")
         planner_entry.close()
-        print("List finished.")
 
     def mark_as_complete(player):
         planner_db = sqlite3.connect("Characters.db")
@@ -77,13 +74,12 @@ class Planner():
             else:
                 for i in tasks:
                     print("{}.) {}".format(i[1],i[0]))
-            print("Which would you like to mark as complete? (By number.)")
+            print("Which would you like to mark as complete(By number)? ")
             complete_task = input().lower().strip()
             if complete_task == "no" or complete_task == "none" or complete_task == "":
                 planner.execute("DELETE FROM PLANNER WHERE STATUS = 0")
                 planner_db.commit()
                 planner.close()
-                print("Completed is deleted...")
                 return
             else:
                 points_list = []
@@ -122,7 +118,7 @@ class Planner():
 
                         print("Which tag would you like to assign to this entry?")
                         print("Tags are: {}".format(", ".join(points_db.keys())).title())
-                        tag = input().lower()
+                        tag = input().lower().strip()
                         if tag in points_db.keys():
                             diary_data = points_db.get(tag)
                             diary_data = diary_data * 2
@@ -208,7 +204,7 @@ class Planner():
         print("In this mode, you can add upcoming dates or check existing info\nand if complete "
               "add them to your diary.")
         while True:
-            print("Would you like to 1) Enter upcoming or 2) Get tasks?")
+            print("Would you like to 1) Enter upcoming or 2) Get tasks? ")
             option = input().strip().lower()
             Zzz = os.system('cls' if os.name == 'nt' else 'clear')
             while option:

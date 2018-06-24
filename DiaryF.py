@@ -71,7 +71,7 @@ class Diary:
         if score in diary_scoring_values.keys():
             score = diary_scoring_values.get(score)
             points_dictionary.update({tag_word: score})
-            print("Excellent, I will add {} with a score of {}".format(tag_word.title(), str(score)))
+            print("Excellent, I will add \"{}\" with a score of {}".format(tag_word.title(), str(score)))
 
         with open("Points.List", "w") as score_table:
             json.dump(points_dictionary, score_table)
@@ -119,7 +119,7 @@ class Diary:
                 diary_data = Diary.scoring_values(key, points)
                 return diary_data
             else:
-                print("Which tag would you like to assign to this entry? ")
+                print("Which tag would you like to assign to this entry?")
                 print("Tags are: {}".format(", ".join(points.keys())).title())
                 tag = input().lower()
                 if tag in points.keys():
@@ -131,7 +131,7 @@ class Diary:
                     diary_data = Diary.scoring_values(tag, points)
                     return diary_data
 
-    def diary_update(player,tags, moods_c):
+    def diary_update(player, tags, moods_c):
         today = datetime.date.today()
         diary_database = sqlite3.connect("Characters.db")
         diary = diary_database.cursor()

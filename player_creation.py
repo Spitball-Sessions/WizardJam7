@@ -131,7 +131,7 @@ def get_player_info():
         clothing)
     print(x)
     print("Probably either pretty attractive or pretty goofy.")
-    time.sleep(3.5)
+    time.sleep(4)
     player_career, player_ambition = get_player_ambitions(name[0])
     sims_info = create_Sim_Info_tuple(name[0], name[1], age, gender, player_career)
 
@@ -212,10 +212,11 @@ def create_player_Sim(X):
             player_info = load_player_sql()
             if player_info != None:
                 Zzz = os.system('cls' if os.name == 'nt' else 'clear')
-                print(random.choice(loading_screens) + "...")
+                print("\n"*25 + random.choice(loading_screens) + "...")
                 player = Player(player_info[0], player_info[1], player_info[2], player_info[3], player_info[4],
                                 player_info[5], player_info[6])
-                time.sleep(.85)
+                time.sleep(1.25)
+                Zzz = os.system('cls' if os.name == 'nt' else 'clear')
                 return player
             else:
                 print("Sorry, that name doesn't exist.  Create?")
