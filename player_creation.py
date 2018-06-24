@@ -1,4 +1,4 @@
-import collections, time, ast, os, json,sqlite3,random
+import collections, time, ast, os, json, sqlite3, random
 from Classes import Player
 
 
@@ -57,6 +57,8 @@ def create_Sim_Info_tuple(first, last, age, gender, career):
 def get_player_ambitions(name):
     ambitions_help, careers_help = help_reader()
     print("All right, nice to meet you {}".format(name))
+    time.sleep(1.25)
+    Zzz = os.system('cls' if os.name == 'nt' else 'clear')
     print("Now we need to establish your Sims' goals and ambitions.")
     print("\nWhich of these career tracks does your Sim want to pursue? Or type \"info\" and track for details.")
     print(", ".join(career_options))
@@ -110,7 +112,7 @@ def get_player_info():
                   "00100000 01111001", "01101111 01110101", "00101100 00100000",
                   "01110010 01101111", "01100010 01101111", "01110100 00101110"]
         print("\n".join(strig))
-    elif input == "dancer":
+    elif inp == "dancer":
         print("But the real question is...  are you Hunter or are you Killer?")
     while True:
         age = input("What is your Sim's age? ").strip()
@@ -129,7 +131,7 @@ def get_player_info():
         clothing)
     print(x)
     print("Probably either pretty attractive or pretty goofy.")
-    time.sleep(2.25)
+    time.sleep(3.5)
     player_career, player_ambition = get_player_ambitions(name[0])
     sims_info = create_Sim_Info_tuple(name[0], name[1], age, gender, player_career)
 

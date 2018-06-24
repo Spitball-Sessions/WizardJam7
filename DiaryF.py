@@ -2,7 +2,7 @@ import datetime, time, os, json, sqlite3
 
 class Diary:
 
-    def diary_entry_sql(player, diary_database):
+    def diary_entry_sql(player, diary_database,tags, moods_c):
         times_appended = 0
         today = datetime.date.today()
 
@@ -16,9 +16,15 @@ class Diary:
 
             entry = input()
             if entry in ("no", "none", "nothing", "n"):
+                if moods_c != None:
+                    x = input("Did you complete your bonus objective? ").lower()
+                    if x == "yes" or x == "y":
+                        diary_database.execute(
+                            "INSERT INTO DIARY (PLAYER_ID,RECORD_DATE,TAG,DIARY_ENTRY,SCORE)VALUES(?,?,?,?,?)",
+                            (player.first + player.last, today, moods_c[1], moods_c[0], int(moods_c[2])*3))
                 break
             else:
-                diary_tags = Diary.parse_diary_entry_for_tags(entry)
+                diary_tags = Diary.parse_diary_entry_for_tags(entry, tags)
                 diary_database.execute("INSERT INTO DIARY (PLAYER_ID,RECORD_DATE,TAG,DIARY_ENTRY,SCORE)VALUES(?,?,?,?,?)",
                                        (player.first+player.last, today, diary_tags[0], entry, diary_tags[1]))
                 times_appended += 1
@@ -27,7 +33,7 @@ class Diary:
         print("Diary updated...")
         return
 
-    def diary_entry(player):
+    """def diary_entry(player):
         times_appended = 0
         daily_score = [0]
         while True:
@@ -41,7 +47,7 @@ class Diary:
             if entry in ("no", "none", "nothing", "n"):
                 break
             else:
-                diary_tags = Diary.parse_diary_entry_for_tags(entry)
+                diary_tags = Diary.parse_diary_entry_for_tags(entry,tags, moods_c)
                 daily_score.append(diary_tags[1])
                 diary_entry = (diary_tags[0] + ": " + entry + " - " + str(diary_tags[1]))
                 with open(player.first + "'s.diary", "a") as diary:
@@ -50,7 +56,7 @@ class Diary:
         with open(player.first + "'s.diary", "a") as diary:
             diary.writelines(
                 "\nPlayer score for today:" + "\n" + str(sum(daily_score)) + "\n\n" + "".center(20, "-") + "\n\n")
-        return daily_score
+        return daily_score"""
 
     def scoring_values(tag_word, points_dictionary):
         diary_scoring_values = {"very bad": -40, "v. bad": -40, "vb": -40, "v b": -40, "very": -40, "1": -40, "2": -25,
@@ -72,7 +78,7 @@ class Diary:
         diary_data = [tag_word, score]
         return diary_data
 
-    def parse_diary_entry_for_tags(entry):
+    def parse_diary_entry_for_tags(entry, tags):
         while True:
             with open('Points.List', encoding='utf-8') as score_table:
                 points = json.loads(score_table.read())
@@ -82,17 +88,21 @@ class Diary:
             for x in range(len(points.keys())):
                 for k in points.keys():
                     if k in entry.lower():
-                        print("Keyword {}, worth {} points is in that entry.".format(k, points.get(k)
-                                                                            ) + "  Would you prefer to designate a tag?")
+                        print("Keyword \"{}\", worth {} points is in that entry.".format(k, points.get(k)
+                                                                            ) + "  Would you prefer to designate a tag? ")
                         proceed = input().lower().strip()
                         if proceed in ("no", "n"):
                             diary_data = [k, points.get(k)]
+                            if diary_data[0] in tags:
+                                diary_data = [diary_data[0],int(diary_data[1])*2]
                             return diary_data
                         else:
-                            print("Which tag would you like to assign to this entry?")
+                            print("Which tag would you like to assign to this entry? ")
                             tag = input().lower()
                             if tag in points.keys():
                                 diary_data = [tag, points.get(tag)]
+                                if diary_data[0] in tags:
+                                    diary_data = [diary_data[0], int(diary_data[1]) * 2]
                                 return diary_data
                             else:
                                 diary_data = Diary.scoring_values(tag, points)
@@ -109,24 +119,26 @@ class Diary:
                 diary_data = Diary.scoring_values(key, points)
                 return diary_data
             else:
-                print("Which tag would you like to assign to this entry?")
+                print("Which tag would you like to assign to this entry? ")
                 print("Tags are: {}".format(", ".join(points.keys())).title())
                 tag = input().lower()
                 if tag in points.keys():
                     diary_data = [tag, points.get(tag)]
+                    if diary_data[0] in tags:
+                        diary_data = [diary_data[0], int(diary_data[1]) * 2]
                     return diary_data
                 else:
                     diary_data = Diary.scoring_values(tag, points)
                     return diary_data
 
-    def diary_update(player):
+    def diary_update(player,tags, moods_c):
         today = datetime.date.today()
         diary_database = sqlite3.connect("Characters.db")
         diary = diary_database.cursor()
-        Diary.diary_entry_sql(player,diary_database)
+        Diary.diary_entry_sql(player,diary_database,tags, moods_c)
         score = diary.execute("SELECT SUM(SCORE) FROM DIARY WHERE RECORD_DATE = ?",(today,))
         for i in score:
-            scorer = i
+            scorer = i[0]
             print("Your score for today is " + str(i).lstrip("(").rstrip(",)"))
         tries = 0
         while True:
@@ -134,39 +146,41 @@ class Diary:
             satis = input()
             if satis == "yes" or satis == "y":
                 print("That's excellent!")
-                time.sleep(.5)
-                Zzz = os.system('cls' if os.name == 'nt' else 'clear')
-                print("A Winner").center(20).center(30,"*")
                 time.sleep(.75)
-                print("You Are!").center(20).center(30,"*")
-                time.sleep(2)
+                Zzz = os.system('cls' if os.name == 'nt' else 'clear')
+                print("A Winner".center(20).center(30,"*"))
+                time.sleep(1)
+                print("You Are!".center(20).center(30,"*"))
+                time.sleep(2.4)
                 diary_database.close()
                 Zzz = os.system('cls' if os.name == 'nt' else 'clear')
                 print("But tomorrow is a chance for you to get an even better score!")
                 time.sleep(3)
                 quit()
             else:
-                if tries = 0:
+                if tries == 0:
                     print("Oh.  I'm sorry to hear that.  Let me give you 50 bonus points.")
                     time.sleep(1.25)
                     scorer = scorer + 50
                     Zzz = os.system('cls' if os.name == 'nt' else 'clear')
-                    print("Now your score is" + str(scorer))
+                    print("Now your score is " + str(scorer))
+                    diary_database.execute(
+                        "INSERT INTO DIARY (PLAYER_ID,RECORD_DATE,TAG,DIARY_ENTRY,SCORE)VALUES(?,?,?,?,?)",
+                        (player.first + player.last, today, "bonus", "I had a bad day today", 50))
+                    diary_database.commit()
                     tries = 1
                     continue
                 else:
                     print("I'm sorry to hear that.")
-                    time.sleep(.5)
+                    time.sleep(.6)
                     Zzz = os.system('cls' if os.name == 'nt' else 'clear')
                     print("Well, then, it looks like today you've lost.")
-                    time.sleep(1)
+                    time.sleep(1.75)
                     Zzz = os.system('cls' if os.name == 'nt' else 'clear')
                     print("But tomorrow is another day!")
                     time.sleep(2)
                     diary_database.close()
                     return
-
-
 
     def diary_retrieval(player_character):
         score = []
@@ -194,9 +208,10 @@ class Diary:
         diary_database.close()
         return
 
-    def diary_usage(player_character):
+    def diary_usage(player_character,tags, moods_c):
         Zzz = os.system('cls' if os.name == 'nt' else 'clear')
-        print("In this mode, you can write about the things you did today, read entries from previous days, and get your scores.")
+        print("In this mode, you can write about the things you did today, "
+              "read entries from previous days, and get your scores.\n")
         while True:
             print("Would you like to 1) Enter diary info, or 2) Get previous log? ")
             log_option = input()
@@ -204,7 +219,7 @@ class Diary:
                 if log_option in ("enter","diary", "enter diary info","1"):
                     time.sleep(.2)
                     Zzz = os.system('cls' if os.name == 'nt' else 'clear')
-                    Diary.diary_update(player_character)
+                    Diary.diary_update(player_character,tags, moods_c)
                     break
                 elif log_option in ("log","previous","2", "get previous log"):
                     Diary.diary_retrieval(player_character)

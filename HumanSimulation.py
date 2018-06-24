@@ -1,5 +1,6 @@
-import collections, time, os, DiaryF, sqlite3, datetime, PlannerF
+import collections, time, os, DiaryF, sqlite3, datetime, PlannerF, Moodlets
 from player_creation import create_player_Sim, sql_player_add
+
 from Classes import Player, Sim
 
 Sims_Info = collections.namedtuple("Sim_Info",
@@ -51,6 +52,11 @@ def sql_create_db():
      DIARY_ENTRY       TEXT     NOT NULL,
      SCORE             INT      NULL);""")
 
+    list_create.execute("""CREATE TABLE IF NOT EXISTS MOODLETS
+    (ITEM         TEXT       NOT NULL,
+    TAGS          TEXT       NOT NULL,
+    POINTS        INTEGER    NOT NULL);""")
+
     # print("Tables created without error.")
 
 if __name__ == '__main__':
@@ -58,24 +64,24 @@ if __name__ == '__main__':
     def main():
         header()
         sql_create_db()
-
-        new__sim = input("Would you like to Create a New Sim? (Y)es or (N)o? ").lower()
-        if new__sim == "y" or new__sim == "yes":
-            player_character = create_player_Sim(new__sim)
+        new_sim = input("Would you like to Create a New Sim? (Y)es or (N)o? ").lower()
+        if new_sim == "y" or new_sim == "yes":
+            player_character = create_player_Sim(new_sim)
             sql_player_add(player_character)
             print("Welcome, {}".format(player_character.first))
         else:
-            player_character = create_player_Sim(new__sim)
+            player_character = create_player_Sim(new_sim)
             print("\nWelcome back, {}".format(player_character.first))
             PlannerF.Planner.starting_todo(player_character)
 
         while True:
+            tags, moods_c = Moodlets.getting_mood_ideas()
             choice = input("\nDo you want to 1) Make / View diary entry or 2) View day planner? ").lower()
             if choice in ("1", "make", "view","entry","diary"):
                 time.sleep(.2)
-
-                DiaryF.Diary.diary_usage(player_character)
+                DiaryF.Diary.diary_usage(player_character, tags, moods_c)
                 print("Exiting diary functions.")
+
             elif choice in ("2","tasks","upcoming","planner"):
                 time.sleep(.2)
                 PlannerF.Planner.select_planner_function(player_character)

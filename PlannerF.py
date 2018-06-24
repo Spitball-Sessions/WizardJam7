@@ -1,4 +1,4 @@
-import datetime, time, sqlite3, json,time, collections, os,DiaryF
+import datetime, time, sqlite3, json,time, collections, os,DiaryF, Moodlets
 
 
 
@@ -55,6 +55,7 @@ class Planner():
         planner_entry = sqlite3.connect("Characters.db")
         planner_entry.execute("INSERT INTO PLANNER(PLAYER_ID,DUE_DATE,DUE_TIME,TASK, TAGS, POINTS, STATUS)VALUES(?,?,?,?,?,?,?)",
                               (player.first+player.last, entry_tuple.due_date, entry_tuple.due_time, entry_tuple.entry, entry_tuple.tag, entry_tuple.score, True))
+        Moodlets.adding_user_created_mood_ideas(tuple,player)
         print("Updated list...")
         planner_entry.commit()
         print("Saved list...")
